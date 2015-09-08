@@ -24,6 +24,7 @@
 #include "Ssao.h"
 #include "TextureMgr.h"
 #include "BasicModel.h"
+#include "Crosshair.h"
 
 struct BoundingSphere
 {
@@ -46,6 +47,7 @@ public:
 	void OnMouseDown(WPARAM btnState, int x, int y);
 	void OnMouseUp(WPARAM btnState, int x, int y);
 	void OnMouseMove(WPARAM btnState, int x, int y);
+	void OnScroll(WPARAM btnState);
 
 private:
 	void DrawSceneToSsaoNormalDepthMap();
@@ -54,10 +56,11 @@ private:
 	void BuildShadowTransform();
 	void BuildScreenQuadGeometryBuffers();
 
+
 private:
 
 	TextureMgr mTexMgr;
-
+	ID3D11ShaderResourceView* mCrosshairMapSRV;
 	Sky* mSky;
 
 	BasicModel* testModel;
@@ -80,14 +83,15 @@ private:
 	XMFLOAT4X4 mShadowTransform;
 
 	Ssao* mSsao;
-
+	Crosshair* mCrosshair;
 	float mLightRotationAngle;
 	XMFLOAT3 mOriginalLightDir[3];
 	DirectionalLight mDirLights[3];
 
 	Camera mCam;
-
+	bool mZoomed = false;
 	POINT mLastMousePos;
+	float zoom;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
@@ -143,7 +147,7 @@ DuckHuntMain::DuckHuntMain(HINSTANCE hInstance)
 DuckHuntMain::~DuckHuntMain()
 {
 	SafeDelete(testModel);
-
+	SafeDelete(mCrosshair);
 	SafeDelete(mSky);
 	SafeDelete(mSmap);
 	SafeDelete(mSsao);
@@ -165,11 +169,14 @@ bool DuckHuntMain::Init()
 	Effects::InitAll(md3dDevice);
 	InputLayouts::InitAll(md3dDevice);
 	RenderStates::InitAll(md3dDevice);
-
+	mCrosshair = new Crosshair(md3dDevice);
 	mTexMgr.Init(md3dDevice);
 
 	mSky = new Sky(md3dDevice, L"Textures/desertcube1024.dds", 5000.0f);
 	mSmap = new ShadowMap(md3dDevice, SMapSize, SMapSize);
+
+	HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice,
+		L"Textures/desertcube1024.dds", 0, 0, &mCrosshairMapSRV, 0));
 
 	mCam.SetLens(0.25f*MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
 	mSsao = new Ssao(md3dDevice, md3dImmediateContext, mClientWidth, mClientHeight, mCam.GetFovY(), mCam.GetFarZ());
@@ -378,7 +385,37 @@ void DuckHuntMain::DrawScene()
 	ID3D11ShaderResourceView* nullSRV[16] = { 0 };
 	md3dImmediateContext->PSSetShaderResources(0, 16, nullSRV);
 
+	mCrosshair->Draw(md3dImmediateContext, mCam);
+
 	HR(mSwapChain->Present(0, 0));
+}
+
+void DuckHuntMain::OnScroll(WPARAM btnState)
+{
+	SetCapture(mhMainWnd);
+
+	if (btnState == WHEEL_DELTA)
+	{
+
+
+		if (zoom != 0.25)
+		{
+			zoom -= 0.25;
+			mCam.ChangeZoom(zoom, AspectRatio());
+		}
+
+
+	}
+	else if (btnState > WHEEL_DELTA)
+	{
+		if (zoom != 1)
+		{
+			zoom += 0.25;
+			mCam.ChangeZoom(zoom, AspectRatio());
+		}
+	}
+
+	ReleaseCapture();
 }
 
 void DuckHuntMain::OnMouseDown(WPARAM btnState, int x, int y)
@@ -396,15 +433,38 @@ void DuckHuntMain::OnMouseUp(WPARAM btnState, int x, int y)
 
 void DuckHuntMain::OnMouseMove(WPARAM btnState, int x, int y)
 {
-	if ((btnState & MK_LBUTTON) != 0)
-	{
-		// Make each pixel correspond to a quarter of a degree.
-		float dx = XMConvertToRadians(0.25f*static_cast<float>(x - mLastMousePos.x));
-		float dy = XMConvertToRadians(0.25f*static_cast<float>(y - mLastMousePos.y));
 
-		mCam.Pitch(dy);
-		mCam.RotateY(dx);
+	if (x <= 3)
+	{
+		SetCursorPos(mClientWidth - mouseXOffset, y);
+		mLastMousePos.x = mClientWidth - mouseXOffset;
+		mLastMousePos.y = y;
+		return;
 	}
+	else if (x >= mClientWidth - clientXOffset)
+	{
+		SetCursorPos(5, y);
+		mLastMousePos.x = 5;
+		mLastMousePos.y = y;
+		return;
+	}
+
+
+
+
+	// Make each pixel correspond to a quarter of a degree.
+	float dx = XMConvertToRadians(0.25f*static_cast<float>(x - mLastMousePos.x));
+	float dy = XMConvertToRadians(0.25f*static_cast<float>(y - mLastMousePos.y));
+
+	mCam.mPitch += dy; //Increment internal pitch 
+
+	if (mCam.mPitch > -XM_PI / 2 && mCam.mPitch < XM_PI / 4) { mCam.Pitch(dy); } //LIMITS UP AND DOWN
+	mCam.mPitch = MathHelper::Clamp(mCam.mPitch, -XM_PI / 2, XM_PI / 4);
+
+
+	mCam.RotateY(dx);
+
+
 
 	mLastMousePos.x = x;
 	mLastMousePos.y = y;
