@@ -84,17 +84,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\Desktop\DuckHunt\Common\Camera.cpp" />
-    <ClCompile Include="..\..\..\..\Desktop\DuckHunt\Common\d3dApp.cpp" />
-    <ClCompile Include="..\..\..\..\Desktop\DuckHunt\Common\d3dUtil.cpp" />
-    <ClCompile Include="..\..\..\..\Desktop\DuckHunt\Common\GameTimer.cpp" />
-    <ClCompile Include="..\..\..\..\Desktop\DuckHunt\Common\GeometryGenerator.cpp" />
-    <ClCompile Include="..\..\..\..\Desktop\DuckHunt\Common\LightHelper.cpp" />
-    <ClCompile Include="..\..\..\..\Desktop\DuckHunt\Common\MathHelper.cpp" />
-    <ClCompile Include="..\..\..\..\Desktop\DuckHunt\Common\TextureMgr.cpp" />
-    <ClCompile Include="..\..\..\..\Desktop\DuckHunt\Common\Waves.cpp" />
-    <ClCompile Include="..\..\..\..\Desktop\DuckHunt\Common\xnacollision.cpp" />
+    <ClCompile Include="..\Common\Camera.cpp" />
+    <ClCompile Include="..\Common\d3dApp.cpp" />
+    <ClCompile Include="..\Common\d3dUtil.cpp" />
+    <ClCompile Include="..\Common\GameTimer.cpp" />
+    <ClCompile Include="..\Common\GeometryGenerator.cpp" />
+    <ClCompile Include="..\Common\LightHelper.cpp" />
+    <ClCompile Include="..\Common\MathHelper.cpp" />
+    <ClCompile Include="..\Common\TextureMgr.cpp" />
+    <ClCompile Include="..\Common\Waves.cpp" />
+    <ClCompile Include="..\Common\xnacollision.cpp" />
     <ClCompile Include="BasicModel.cpp" />
+    <ClCompile Include="Crosshair.cpp" />
     <ClCompile Include="DuckHuntMain.cpp" />
     <ClCompile Include="Effects.cpp" />
     <ClCompile Include="LoadM3d.cpp" />
@@ -107,19 +108,20 @@
     <ClCompile Include="Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\Desktop\DuckHunt\Common\Camera.h" />
-    <ClInclude Include="..\..\..\..\Desktop\DuckHunt\Common\d3dApp.h" />
-    <ClInclude Include="..\..\..\..\Desktop\DuckHunt\Common\d3dUtil.h" />
-    <ClInclude Include="..\..\..\..\Desktop\DuckHunt\Common\d3dx11effect.h" />
-    <ClInclude Include="..\..\..\..\Desktop\DuckHunt\Common\d3dxGlobal.h" />
-    <ClInclude Include="..\..\..\..\Desktop\DuckHunt\Common\GameTimer.h" />
-    <ClInclude Include="..\..\..\..\Desktop\DuckHunt\Common\GeometryGenerator.h" />
-    <ClInclude Include="..\..\..\..\Desktop\DuckHunt\Common\LightHelper.h" />
-    <ClInclude Include="..\..\..\..\Desktop\DuckHunt\Common\MathHelper.h" />
-    <ClInclude Include="..\..\..\..\Desktop\DuckHunt\Common\TextureMgr.h" />
-    <ClInclude Include="..\..\..\..\Desktop\DuckHunt\Common\Waves.h" />
-    <ClInclude Include="..\..\..\..\Desktop\DuckHunt\Common\xnacollision.h" />
+    <ClInclude Include="..\Common\Camera.h" />
+    <ClInclude Include="..\Common\d3dApp.h" />
+    <ClInclude Include="..\Common\d3dUtil.h" />
+    <ClInclude Include="..\Common\d3dx11effect.h" />
+    <ClInclude Include="..\Common\d3dxGlobal.h" />
+    <ClInclude Include="..\Common\GameTimer.h" />
+    <ClInclude Include="..\Common\GeometryGenerator.h" />
+    <ClInclude Include="..\Common\LightHelper.h" />
+    <ClInclude Include="..\Common\MathHelper.h" />
+    <ClInclude Include="..\Common\TextureMgr.h" />
+    <ClInclude Include="..\Common\Waves.h" />
+    <ClInclude Include="..\Common\xnacollision.h" />
     <ClInclude Include="BasicModel.h" />
+    <ClInclude Include="Crosshair.h" />
     <ClInclude Include="Effects.h" />
     <ClInclude Include="LoadM3d.h" />
     <ClInclude Include="LoadOBJ.h" />
