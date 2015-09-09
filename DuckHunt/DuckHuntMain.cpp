@@ -55,6 +55,7 @@ private:
 	void DrawScreenQuad(ID3D11ShaderResourceView* srv);
 	void BuildShadowTransform();
 	void BuildScreenQuadGeometryBuffers();
+	
 
 
 private:
@@ -63,7 +64,10 @@ private:
 	ID3D11ShaderResourceView* mCrosshairMapSRV;
 	Sky* mSky;
 
-	BasicModel* testModel;
+	BasicModel* testModelDuck;
+	BasicModel* testModelDuck2;
+	BasicModel* testModelDuck3;
+	BasicModel* testModelDuck4;
 
 	std::vector<BasicModelInstance> mModelInstances;
 	std::vector<BasicModelInstance> mAlphaClippedModelInstances;
@@ -92,6 +96,9 @@ private:
 	bool mZoomed = false;
 	POINT mLastMousePos;
 	float zoom;
+
+	int mouseXOffset = 15;
+	int clientXOffset = 10;
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
@@ -112,7 +119,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
 
 
 DuckHuntMain::DuckHuntMain(HINSTANCE hInstance)
-	: D3DApp(hInstance), mSky(0), testModel(0),
+	: D3DApp(hInstance), mSky(0), testModelDuck(0), testModelDuck2(0), testModelDuck3(0), testModelDuck4(0),
 	mScreenQuadVB(0), mScreenQuadIB(0),
 	mSmap(0), mSsao(0),
 	mLightRotationAngle(0.0f)
@@ -146,7 +153,10 @@ DuckHuntMain::DuckHuntMain(HINSTANCE hInstance)
 
 DuckHuntMain::~DuckHuntMain()
 {
-	SafeDelete(testModel);
+	SafeDelete(testModelDuck);
+	SafeDelete(testModelDuck2);
+	SafeDelete(testModelDuck3);
+	SafeDelete(testModelDuck4);
 	SafeDelete(mCrosshair);
 	SafeDelete(mSky);
 	SafeDelete(mSmap);
@@ -183,19 +193,62 @@ bool DuckHuntMain::Init()
 
 	BuildScreenQuadGeometryBuffers();
 
-	testModel = new BasicModel(md3dDevice, mTexMgr, "Models\\duck.obj", L"Textures\\");
+	testModelDuck = new BasicModel(md3dDevice, mTexMgr, "Models\\duck.obj", L"Textures\\DUCK.jpg");
+	testModelDuck2 = new BasicModel(md3dDevice, mTexMgr, "Models\\duck.obj", L"Textures\\DUCK.jpg");
+	testModelDuck3 = new BasicModel(md3dDevice, mTexMgr, "Models\\duck.obj", L"Textures\\Duck.jpg");
+	testModelDuck4 = new BasicModel(md3dDevice, mTexMgr, "Models\\duck.obj", L"Textures\\Duck.jpg");
 
-	BasicModelInstance testInstance;
 
-	testInstance.Model = testModel;
+	BasicModelInstance testInstanceDuck;
+	BasicModelInstance testInstanceDuck2;
+	BasicModelInstance testInstanceDuck3;
+	BasicModelInstance testInstanceDuck4;
 
+	testInstanceDuck.Model = testModelDuck;
+	testInstanceDuck2.Model = testModelDuck2;
+	testInstanceDuck3.Model = testModelDuck3;
+	testInstanceDuck4.Model = testModelDuck4;
+
+
+	//Duck 1
 	XMMATRIX modelScale = XMMatrixScaling(1.0f, 1.0f, -1.0f);
 	XMMATRIX modelRot = XMMatrixRotationY(0.0f);
 	XMMATRIX modelOffset = XMMatrixTranslation(0.0f, 0.0f, 0.0f);
+	//Duck 2
+	XMMATRIX modelScale2 = XMMatrixScaling(2.0f, 2.0f, -1.0f);
+	XMMATRIX modelRot2 = XMMatrixRotationY(-1.0f);
+	XMMATRIX modelOffset2 = XMMatrixTranslation(1.0f, 1.0f, -1.0f);
+	//Duck3
+	XMMATRIX modelScale3 = XMMatrixScaling(1.5f, 1.5f, 1.5f);
+	XMMATRIX modelRot3 = XMMatrixRotationY(0.5f);
+	XMMATRIX modelOffset3 = XMMatrixTranslation(2.0f, 1.0f, -1.0f);
+	//Duck4
+	XMMATRIX modelScale4 = XMMatrixScaling(0.5f, 0.5f, -1.0f);
+	XMMATRIX modelRot4 = XMMatrixRotationY(1.0f);
+	XMMATRIX modelOffset4 = XMMatrixTranslation(0.5f, 1.0f, -1.0f);
 
-	XMStoreFloat4x4(&testInstance.World, modelScale*modelRot*modelOffset);
 
-	mModelInstances.push_back(testInstance);
+	//Duck 1
+	XMStoreFloat4x4(&testInstanceDuck.World, modelScale*modelRot*modelOffset);
+	mModelInstances.push_back(testInstanceDuck);
+	
+	//Duck 2
+	XMStoreFloat4x4(&testInstanceDuck2.World, modelScale2*modelRot2*modelOffset2);
+	mModelInstances.push_back(testInstanceDuck2);
+
+	//Duck 3
+	XMStoreFloat4x4(&testInstanceDuck.World, modelScale3*modelRot3*modelOffset3);
+	mModelInstances.push_back(testInstanceDuck3);
+	
+	//Duck 4
+	XMStoreFloat4x4(&testInstanceDuck.World, modelScale4*modelRot4*modelOffset4);
+	mModelInstances.push_back(testInstanceDuck4);
+
+
+
+
+
+
 
 
 	//
