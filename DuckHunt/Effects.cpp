@@ -321,6 +321,23 @@ DebugTexEffect::~DebugTexEffect()
 
 #pragma endregion
 
+
+
+#pragma region CrosshairEffect
+CrosshairEffect::CrosshairEffect(ID3D11Device* device, const std::wstring& filename)
+	: Effect(device, filename)
+{
+	CrosshairTech = mFX->GetTechniqueByName("CrosshairTech");
+	WorldViewProj = mFX->GetVariableByName("gWorldViewProj")->AsMatrix();
+	
+}
+
+CrosshairEffect::~CrosshairEffect()
+{
+}
+#pragma endregion
+
+
 #pragma region Effects
 
 BasicEffect*           Effects::BasicFX = 0;
@@ -331,6 +348,7 @@ SsaoEffect*            Effects::SsaoFX = 0;
 SsaoBlurEffect*        Effects::SsaoBlurFX = 0;
 SkyEffect*             Effects::SkyFX = 0;
 DebugTexEffect*        Effects::DebugTexFX = 0;
+CrosshairEffect*	   Effects::CrosshairFX = 0;
 
 void Effects::InitAll(ID3D11Device* device)
 {
@@ -342,6 +360,7 @@ void Effects::InitAll(ID3D11Device* device)
 	SsaoBlurFX = new SsaoBlurEffect(device, L"FX/SsaoBlur.fxo");
 	SkyFX = new SkyEffect(device, L"FX/Sky.fxo");
 	DebugTexFX = new DebugTexEffect(device, L"FX/DebugTexture.fxo");
+	CrosshairFX = new CrosshairEffect(device, L"FX/Crosshair.fxo");
 }
 
 void Effects::DestroyAll()
@@ -354,6 +373,7 @@ void Effects::DestroyAll()
 	SafeDelete(SsaoBlurFX);
 	SafeDelete(SkyFX);
 	SafeDelete(DebugTexFX);
+	SafeDelete(CrosshairFX);
 }
 
 #pragma endregion

@@ -373,6 +373,23 @@ public:
 };
 #pragma endregion
 
+#pragma region CrosshairEffect
+class CrosshairEffect : public Effect
+{
+public:
+	CrosshairEffect(ID3D11Device* device, const std::wstring& filename);
+	~CrosshairEffect();
+
+	void SetWorldViewProj(CXMMATRIX M)                  { WorldViewProj->SetMatrix(reinterpret_cast<const float*>(&M)); }
+
+
+	ID3DX11EffectTechnique* CrosshairTech;
+
+	ID3DX11EffectMatrixVariable* WorldViewProj;
+
+};
+#pragma endregion
+
 #pragma region DebugTexEffect
 class DebugTexEffect : public Effect
 {
@@ -409,6 +426,7 @@ public:
 	static SsaoBlurEffect* SsaoBlurFX;
 	static SkyEffect* SkyFX;
 	static DebugTexEffect* DebugTexFX;
+	static CrosshairEffect* CrosshairFX;
 };
 #pragma endregion
 

@@ -26,3 +26,7 @@
 *.exe
 *.out
 *.app
+*.user
+*.cso
+DuckHunt/Debug/Basic.cso
+*.cso

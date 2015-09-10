@@ -26,6 +26,12 @@ namespace Vertex
 		XMFLOAT2 Tex;
 		XMFLOAT4 TangentU;
 	};
+
+	struct Crosshair
+	{
+		XMFLOAT3 Pos;
+		XMFLOAT4 Color;
+	};
 }
 
 class InputLayoutDesc
@@ -35,6 +41,7 @@ public:
 	static const D3D11_INPUT_ELEMENT_DESC Pos[1];
 	static const D3D11_INPUT_ELEMENT_DESC Basic32[3];
 	static const D3D11_INPUT_ELEMENT_DESC PosNormalTexTan[4];
+	static const D3D11_INPUT_ELEMENT_DESC Crosshair[2];
 };
 
 class InputLayouts
@@ -46,6 +53,7 @@ public:
 	static ID3D11InputLayout* Pos;
 	static ID3D11InputLayout* Basic32;
 	static ID3D11InputLayout* PosNormalTexTan;
+	static ID3D11InputLayout* Crosshair;
 };
 
 #endif // VERTEX_H

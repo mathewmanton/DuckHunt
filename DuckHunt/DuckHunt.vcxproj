@@ -41,9 +41,9 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <ExecutablePath>C:\Users\Nicole\Documents\DirectXSDL\DirectX SDK June 2010\Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
-    <IncludePath>$(IncludePath);C:\Users\Nicole\Documents\DirectXSDL\DirectX SDK June 2010\Include;C:\Users\Nicole\Documents\DirectXSDL\Common;</IncludePath>
-    <LibraryPath>$(LibraryPath);C:\Users\Nicole\Documents\DirectXSDL\DirectX SDK June 2010\Lib\x86;C:\Users\Nicole\Documents\DirectXSDL\Common;</LibraryPath>
+    <ExecutablePath>C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Utilities\bin\x86;$(ExecutablePath)</ExecutablePath>
+    <IncludePath>$(IncludePath);C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Include;C:\Users\Mat\Desktop\DirectXSourceCode\Common</IncludePath>
+    <LibraryPath>$(LibraryPath);C:\Program Files %28x86%29\Microsoft DirectX SDK %28June 2010%29\Lib\x86;C:\Users\Mat\Desktop\DirectXSourceCode\Common</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -135,6 +135,7 @@
   <ItemGroup>
     <FxCompile Include="FX\Basic.fx" />
     <FxCompile Include="FX\BuildShadowMap.fx" />
+    <FxCompile Include="FX\Crosshair.fx" />
     <FxCompile Include="FX\DebugTexture.fx" />
     <FxCompile Include="FX\LightHelper.fx" />
     <FxCompile Include="FX\NormalMap.fx" />

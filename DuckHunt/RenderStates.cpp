@@ -8,12 +8,20 @@ ID3D11RasterizerState*   RenderStates::WireframeRS = 0;
 ID3D11RasterizerState*   RenderStates::NoCullRS = 0;
 
 ID3D11DepthStencilState* RenderStates::EqualsDSS = 0;
-
+ID3D11DepthStencilState* RenderStates::Crosshair = 0;
 ID3D11BlendState*        RenderStates::AlphaToCoverageBS = 0;
 ID3D11BlendState*        RenderStates::TransparentBS = 0;
 
 void RenderStates::InitAll(ID3D11Device* device)
 {
+
+	//Crosshair
+	D3D11_DEPTH_STENCIL_DESC crosshairDesc;
+	ZeroMemory(&crosshairDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
+	crosshairDesc.DepthEnable = false;
+	crosshairDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	crosshairDesc.DepthFunc = D3D11_COMPARISON_EQUAL;
+	HR(device->CreateDepthStencilState(&crosshairDesc, &Crosshair));
 	//
 	// WireframeRS
 	//

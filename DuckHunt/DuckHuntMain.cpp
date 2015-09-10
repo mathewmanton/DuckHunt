@@ -122,7 +122,7 @@ DuckHuntMain::DuckHuntMain(HINSTANCE hInstance)
 	: D3DApp(hInstance), mSky(0), testModelDuck(0), testModelDuck2(0), testModelDuck3(0), testModelDuck4(0),
 	mScreenQuadVB(0), mScreenQuadIB(0),
 	mSmap(0), mSsao(0),
-	mLightRotationAngle(0.0f)
+	mLightRotationAngle(0.0f), zoom(1)
 {
 	mMainWndCaption = L"MeshView Demo";
 
@@ -181,12 +181,10 @@ bool DuckHuntMain::Init()
 	RenderStates::InitAll(md3dDevice);
 	mCrosshair = new Crosshair(md3dDevice);
 	mTexMgr.Init(md3dDevice);
-
+	DuckHuntMain::ShowCursors(false);
 	mSky = new Sky(md3dDevice, L"Textures/desertcube1024.dds", 5000.0f);
 	mSmap = new ShadowMap(md3dDevice, SMapSize, SMapSize);
 
-	HR(D3DX11CreateShaderResourceViewFromFile(md3dDevice,
-		L"Textures/desertcube1024.dds", 0, 0, &mCrosshairMapSRV, 0));
 
 	mCam.SetLens(0.25f*MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
 	mSsao = new Ssao(md3dDevice, md3dImmediateContext, mClientWidth, mClientHeight, mCam.GetFovY(), mCam.GetFarZ());
@@ -428,7 +426,7 @@ void DuckHuntMain::DrawScene()
 	//DrawScreenQuad(mSsao->AmbientSRV());
 
 	mSky->Draw(md3dImmediateContext, mCam);
-
+	mCrosshair->Draw(md3dImmediateContext, mCam, mScreenViewport.Width, mScreenViewport.Height);
 	// restore default states, as the SkyFX changes them in the effect file.
 	md3dImmediateContext->RSSetState(0);
 	md3dImmediateContext->OMSetDepthStencilState(0, 0);
@@ -438,7 +436,7 @@ void DuckHuntMain::DrawScene()
 	ID3D11ShaderResourceView* nullSRV[16] = { 0 };
 	md3dImmediateContext->PSSetShaderResources(0, 16, nullSRV);
 
-	mCrosshair->Draw(md3dImmediateContext, mCam);
+
 
 	HR(mSwapChain->Present(0, 0));
 }
@@ -476,6 +474,12 @@ void DuckHuntMain::OnMouseDown(WPARAM btnState, int x, int y)
 	mLastMousePos.x = x;
 	mLastMousePos.y = y;
 
+	if ((btnState & MK_RBUTTON) != 0)
+	{
+		mZoomed = true;
+		zoom = 1;
+		mCam.Zoom(AspectRatio());
+	}
 	SetCapture(mhMainWnd);
 }
 

@@ -187,5 +187,8 @@
     <FxCompile Include="FX\SsaoNormalDepth.fx">
       <Filter>FX</Filter>
     </FxCompile>
+    <FxCompile Include="FX\Crosshair.fx">
+      <Filter>FX</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
