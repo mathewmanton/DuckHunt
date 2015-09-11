@@ -134,7 +134,7 @@ DuckHuntMain::DuckHuntMain(HINSTANCE hInstance)
 	mSmap(0), mSsao(0),
 	mLightRotationAngle(0.0f), zoom(1)
 {
-	mMainWndCaption = L"MeshView Demo";
+	mMainWndCaption = L"Duck Hunt";
 
 	mLastMousePos.x = 0;
 	mLastMousePos.y = 0;
@@ -514,6 +514,7 @@ void DuckHuntMain::OnMouseDown(WPARAM btnState, int x, int y)
 
 		if (pickedModel != -1)
 		{
+			score++;
 			mModelInstances.erase(mModelInstances.begin() + pickedModel);
 		}
 		

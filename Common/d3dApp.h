@@ -24,7 +24,7 @@ public:
 	HINSTANCE AppInst()const;
 	HWND      MainWnd()const;
 	float     AspectRatio()const;
-	
+	float score = 0;
 	int Run();
  
 	// Framework methods.  Derived client class overrides these methods to 

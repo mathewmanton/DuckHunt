@@ -513,6 +513,7 @@ void D3DApp::CalculateFrameStats()
 	{
 		float fps = (float)frameCnt; // fps = frameCnt / 1
 		float mspf = 1000.0f / fps;
+		
 		std::wostringstream outs;
 		outs.precision(6);
 
@@ -520,15 +521,22 @@ void D3DApp::CalculateFrameStats()
 		{
 
 			outs << mMainWndCaption << L"    "
-				/*<< L"FPS: " << fps << L"    "
-				<< L"Frame Time: " << mspf << L" (ms)" << L"		"*/
-				<< L"			Time: " << gametime - timeElapsed << L" (s)";
+			<< L"Score: " << score << L"    "
+			<< L"			Time: " << gametime - timeElapsed << L" (s)";
 		}
 		else if ((gametime - timeElapsed) <= 0)
 		{
-
-			outs << mMainWndCaption << L"    "
-				<< L"Round Over";
+			if (score <= 0)
+			{
+				outs << mMainWndCaption << L"    "
+					<< L"Round Over!   You Lose!";
+			}
+			else if (score > 0)
+			{
+				outs << mMainWndCaption << L"    "
+					<< L"Round Over!" << L"    "<< "You Win!!!";
+			}
+				
 		}
 		SetWindowText(mhMainWnd, outs.str().c_str());
 		
