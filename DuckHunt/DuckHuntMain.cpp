@@ -265,7 +265,7 @@ bool DuckHuntMain::Init()
 	//create collision box
 	for (unsigned i = 0; i < mModelInstances.size(); i++)
 	{
-		mModelInstances[i].Model->CreateCollisionBox(mModelInstances[i].Model->Vertices);
+		mModelInstances[i].Model->CreateCollisionBox(mModelInstances[i].Model->BasicVertices);
 	}
 
 
@@ -839,6 +839,7 @@ int DuckHuntMain::pick(float x, float y, std::vector<BasicModelInstance> models)
 	// Compute picking ray in view space.
 	int newWidth, newHeight;
 	float fs;
+
 	 newWidth = mScreenViewport.Width; 
 	 newHeight = mScreenViewport.Height; 
 	 fs = 1.0f; 

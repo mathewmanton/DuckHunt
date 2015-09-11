@@ -40,7 +40,7 @@ BasicModel::~BasicModel()
 {
 }
 
-void BasicModel::CreateCollisionBox(std::vector<Vertex::PosNormalTexTan> Vertices)
+void BasicModel::CreateCollisionBox(std::vector<Vertex::Basic32> Vertices)
 {
 	XMFLOAT3 vMinf3(+MathHelper::Infinity, +MathHelper::Infinity, +MathHelper::Infinity);
 	XMFLOAT3 vMaxf3(-MathHelper::Infinity, -MathHelper::Infinity, -MathHelper::Infinity);

@@ -26,7 +26,7 @@ public:
 	std::vector<MeshGeometry::Subset> Subsets;
 
 	MeshGeometry ModelMesh;
-	void CreateCollisionBox(std::vector<Vertex::PosNormalTexTan> Vertices);
+	void CreateCollisionBox(std::vector<Vertex::Basic32> Vertices);
 };
 
 struct BasicModelInstance
