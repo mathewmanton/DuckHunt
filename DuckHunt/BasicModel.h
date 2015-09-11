@@ -4,7 +4,7 @@
 #include "MeshGeometry.h"
 #include "TextureMgr.h"
 #include "Vertex.h"
-
+#include "xnacollision.h"
 class BasicModel
 {
 public:
@@ -14,7 +14,7 @@ public:
 	~BasicModel();
 
 	UINT SubsetCount;
-
+	XNA::AxisAlignedBox collisionBox;
 	std::vector<Material> Mat;
 	std::vector<ID3D11ShaderResourceView*> DiffuseMapSRV;
 	std::vector<ID3D11ShaderResourceView*> NormalMapSRV;
@@ -26,6 +26,7 @@ public:
 	std::vector<MeshGeometry::Subset> Subsets;
 
 	MeshGeometry ModelMesh;
+	void CreateCollisionBox(std::vector<Vertex::PosNormalTexTan> Vertices);
 };
 
 struct BasicModelInstance

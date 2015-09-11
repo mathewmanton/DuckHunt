@@ -26,8 +26,7 @@
 #include "BasicModel.h"
 #include "Crosshair.h"
 #include "fmod.hpp"
-#include "fmod_common.h"
-
+#include "xnacollision.h"
 struct BoundingSphere
 {
 	BoundingSphere() : Center(0.0f, 0.0f, 0.0f), Radius(0.0f) {}
@@ -57,6 +56,7 @@ private:
 	void DrawScreenQuad(ID3D11ShaderResourceView* srv);
 	void BuildShadowTransform();
 	void BuildScreenQuadGeometryBuffers();
+	int pick(float x, float y, std::vector<BasicModelInstance> models);
 	
 
 
@@ -107,6 +107,8 @@ private:
 
 	int mouseXOffset = 15;
 	int clientXOffset = 10;
+	int pickedModel = 0;
+
 };
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE prevInstance,
@@ -224,6 +226,7 @@ bool DuckHuntMain::Init()
 	testInstanceDuck4.Model = testModelDuck;
 
 
+
 	//Duck 1
 	XMMATRIX modelScale = XMMatrixScaling(1.0f, 1.0f, -1.0f);
 	XMMATRIX modelRot = XMMatrixRotationY(0.0f);
@@ -245,20 +248,25 @@ bool DuckHuntMain::Init()
 	//Duck 1
 	XMStoreFloat4x4(&testInstanceDuck.World, modelScale*modelRot*modelOffset);
 	mModelInstances.push_back(testInstanceDuck);
-	
+
 	//Duck 2
 	XMStoreFloat4x4(&testInstanceDuck2.World, modelScale2*modelRot2*modelOffset2);
 	mModelInstances.push_back(testInstanceDuck2);
 
 	//Duck 3
-	XMStoreFloat4x4(&testInstanceDuck.World, modelScale3*modelRot3*modelOffset3);
+	XMStoreFloat4x4(&testInstanceDuck3.World, modelScale3*modelRot3*modelOffset3);
 	mModelInstances.push_back(testInstanceDuck3);
-	
+
 	//Duck 4
-	XMStoreFloat4x4(&testInstanceDuck.World, modelScale4*modelRot4*modelOffset4);
+	XMStoreFloat4x4(&testInstanceDuck4.World, modelScale4*modelRot4*modelOffset4);
 	mModelInstances.push_back(testInstanceDuck4);
 
 
+	//create collision box
+	for (unsigned i = 0; i < mModelInstances.size(); i++)
+	{
+		mModelInstances[i].Model->CreateCollisionBox(mModelInstances[i].Model->Vertices);
+	}
 
 
 
@@ -500,6 +508,16 @@ void DuckHuntMain::OnMouseDown(WPARAM btnState, int x, int y)
 	if ((btnState & MK_LBUTTON) != 0)
 	{
 		result = mSystem->playSound(mGunFire, 0, false, &channel);
+
+	
+		pickedModel = pick(mScreenViewport.Width / 2, mScreenViewport.Height / 2, mModelInstances);
+
+		if (pickedModel != -1)
+		{
+			mModelInstances.erase(mModelInstances.begin() + pickedModel);
+		}
+		
+
 	}
 	SetCapture(mhMainWnd);
 }
@@ -810,4 +828,57 @@ void DuckHuntMain::BuildScreenQuadGeometryBuffers()
 	D3D11_SUBRESOURCE_DATA iinitData;
 	iinitData.pSysMem = &quad.Indices[0];
 	HR(md3dDevice->CreateBuffer(&ibd, &iinitData, &mScreenQuadIB));
+}
+
+
+int DuckHuntMain::pick(float x, float y, std::vector<BasicModelInstance> models)
+{
+
+	XMMATRIX P = mCam.Proj();
+
+	// Compute picking ray in view space.
+	int newWidth, newHeight;
+	float fs;
+	 newWidth = mScreenViewport.Width; 
+	 newHeight = mScreenViewport.Height; 
+	 fs = 1.0f; 
+
+
+	float vx = (+2.0f*x / newWidth - fs) / P(0, 0);
+	float vy = (-2.0f*y / newHeight + fs) / P(1, 1);
+
+
+	// Ray definition in view space.
+	XMVECTOR rayOrigin = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+	XMVECTOR rayDir = XMVectorSet(vx, vy, 1.0f, 0.0f);
+
+	// Tranform ray to local space of Mesh.
+	XMMATRIX V = mCam.View();
+	XMMATRIX invView = XMMatrixInverse(&XMMatrixDeterminant(V), V);
+
+
+	for (unsigned i = 0; i < models.size(); ++i)
+	{
+		XMMATRIX W = XMLoadFloat4x4(&models[i].World);
+		XMMATRIX invWorld = XMMatrixInverse(&XMMatrixDeterminant(W), W);
+
+		XMMATRIX toLocal = XMMatrixMultiply(invView, invWorld);
+
+		rayOrigin = XMVector3TransformCoord(rayOrigin, toLocal);
+		rayDir = XMVector3TransformNormal(rayDir, toLocal);
+
+		// Make the ray direction unit length for the intersection tests.
+		rayDir = XMVector3Normalize(rayDir);
+
+		float tmin = 0.0f; // The Returned Distance
+		if (XNA::IntersectRayAxisAlignedBox(rayOrigin, rayDir, &models[i].Model->collisionBox, &tmin))
+		{
+
+			//WE ARE IN THE MESH .. DO WHATEVER YOU WANT
+			return i;
+		}
+
+	}
+	return -1;
+
 }

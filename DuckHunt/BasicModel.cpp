@@ -39,3 +39,22 @@ BasicModel::BasicModel(ID3D11Device* device, TextureMgr& texMgr,
 BasicModel::~BasicModel()
 {
 }
+
+void BasicModel::CreateCollisionBox(std::vector<Vertex::PosNormalTexTan> Vertices)
+{
+	XMFLOAT3 vMinf3(+MathHelper::Infinity, +MathHelper::Infinity, +MathHelper::Infinity);
+	XMFLOAT3 vMaxf3(-MathHelper::Infinity, -MathHelper::Infinity, -MathHelper::Infinity);
+
+	XMVECTOR vMin = XMLoadFloat3(&vMinf3);
+	XMVECTOR vMax = XMLoadFloat3(&vMaxf3);
+
+	for (size_t i = 0; i < Vertices.size(); ++i)
+	{
+		XMVECTOR P = XMLoadFloat3(&Vertices[i].Pos);
+
+		vMin = XMVectorMin(vMin, P);
+		vMax = XMVectorMax(vMax, P);
+	}
+	XMStoreFloat3(&collisionBox.Center, 0.5f*(vMin + vMax));
+	XMStoreFloat3(&collisionBox.Extents, 0.5f*(vMax - vMin));
+}
