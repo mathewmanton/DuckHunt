@@ -504,6 +504,7 @@ void D3DApp::CalculateFrameStats()
 
 	static int frameCnt = 0;
 	static float timeElapsed = 0.0f;
+	static float gametime = 20.0f;
 
 	frameCnt++;
 
@@ -512,12 +513,23 @@ void D3DApp::CalculateFrameStats()
 	{
 		float fps = (float)frameCnt; // fps = frameCnt / 1
 		float mspf = 1000.0f / fps;
-
-		std::wostringstream outs;   
+		std::wostringstream outs;
 		outs.precision(6);
-		outs << mMainWndCaption << L"    "
-			 << L"FPS: " << fps << L"    " 
-			 << L"Frame Time: " << mspf << L" (ms)";
+
+		if ((gametime - timeElapsed) > 0)
+		{
+
+			outs << mMainWndCaption << L"    "
+				/*<< L"FPS: " << fps << L"    "
+				<< L"Frame Time: " << mspf << L" (ms)" << L"		"*/
+				<< L"			Time: " << gametime - timeElapsed << L" (s)";
+		}
+		else if ((gametime - timeElapsed) <= 0)
+		{
+
+			outs << mMainWndCaption << L"    "
+				<< L"Round Over";
+		}
 		SetWindowText(mhMainWnd, outs.str().c_str());
 		
 		// Reset for next average.
