@@ -76,23 +76,29 @@ Crosshair::Crosshair(ID3D11Device* device)
 	mTech = Effects::CrosshairFX->CrosshairTech;
 }
 
-void Crosshair::Draw(ID3D11DeviceContext* dc, Camera cam, float viewWidth, float viewHeight)
+void Crosshair::Draw(ID3D11DeviceContext* dc, const Camera& cam, float viewWidth, float viewHeight)
 {
 
 
 
-	World = XMMatrixIdentity();
-	Scale = XMMatrixScaling(0.125, 0.25, 1);
-	Translation = XMMatrixTranslation(50.0f, 50.0f, 1.0f);
+	XMMATRIX World = XMMatrixIdentity();
+	XMMATRIX Scale = XMMatrixScaling(0.125, 0.25, 0);
+	XMMATRIX Translation = XMMatrixTranslation(1.0f, 1.0f, 0.0f);
+	XMMATRIX Rotation = XMMatrixRotationY(0.0f);
 
-	World *= Scale;
+	World = World * Scale;
+	//World = XMMatrixTranspose(World);
+	//XMMATRIX ortho = XMMatrixOrthographicLH(viewWidth, viewHeight, cam.GetNearZ(), cam.GetFarZ());
+	//XMMATRIX WVP = World * ortho;
 
-	WVP = World * cam.View() * cam.Proj();
 	UINT stride = sizeof(Vertex::Crosshair);
 	UINT offset = 0;
+	dc->IASetInputLayout(InputLayouts::Crosshair);
 	dc->IASetVertexBuffers(0, 1, &mCrosshairVB, &stride, &offset);
 	dc->IASetIndexBuffer(mCrosshairIB, DXGI_FORMAT_R32_UINT, 0);
 	dc->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	dc->OMSetDepthStencilState(RenderStates::Crosshair,0);
+	
 	Effects::CrosshairFX->SetWorldViewProj(World);
 
 	
@@ -105,6 +111,7 @@ void Crosshair::Draw(ID3D11DeviceContext* dc, Camera cam, float viewWidth, float
 		// 36 indices for the box.
 		dc->DrawIndexed(30, 0, 0);
 	}
+	dc->OMSetDepthStencilState(0, 0);
 }
 
 

@@ -25,6 +25,8 @@
 #include "TextureMgr.h"
 #include "BasicModel.h"
 #include "Crosshair.h"
+#include "fmod.hpp"
+#include "fmod_common.h"
 
 struct BoundingSphere
 {
@@ -61,13 +63,19 @@ private:
 private:
 
 	TextureMgr mTexMgr;
-	ID3D11ShaderResourceView* mCrosshairMapSRV;
 	Sky* mSky;
 
 	BasicModel* testModelDuck;
 	BasicModel* testModelDuck2;
 	BasicModel* testModelDuck3;
 	BasicModel* testModelDuck4;
+	
+	//Sound
+	FMOD::System  *mSystem;
+	FMOD::Sound   *mGunFire;
+	FMOD::Channel *channel = 0;
+	FMOD_RESULT result;
+
 
 	std::vector<BasicModelInstance> mModelInstances;
 	std::vector<BasicModelInstance> mAlphaClippedModelInstances;
@@ -157,13 +165,13 @@ DuckHuntMain::~DuckHuntMain()
 	SafeDelete(testModelDuck2);
 	SafeDelete(testModelDuck3);
 	SafeDelete(testModelDuck4);
-	SafeDelete(mCrosshair);
 	SafeDelete(mSky);
 	SafeDelete(mSmap);
 	SafeDelete(mSsao);
 
 	ReleaseCOM(mScreenQuadVB);
 	ReleaseCOM(mScreenQuadIB);
+	mSystem->release();
 
 	Effects::DestroyAll();
 	InputLayouts::DestroyAll();
@@ -185,6 +193,16 @@ bool DuckHuntMain::Init()
 	mSky = new Sky(md3dDevice, L"Textures/desertcube1024.dds", 5000.0f);
 	mSmap = new ShadowMap(md3dDevice, SMapSize, SMapSize);
 
+	//Sound
+	result = FMOD::System_Create(&mSystem);
+	result = mSystem->init(32, FMOD_INIT_NORMAL, 0);
+	result = mSystem->createSound("Sounds/GunFire.wav", FMOD_DEFAULT, 0, &mGunFire);
+	result = mGunFire->setMode(FMOD_LOOP_OFF);
+
+
+
+
+
 
 	mCam.SetLens(0.25f*MathHelper::Pi, AspectRatio(), 1.0f, 1000.0f);
 	mSsao = new Ssao(md3dDevice, md3dImmediateContext, mClientWidth, mClientHeight, mCam.GetFovY(), mCam.GetFarZ());
@@ -192,9 +210,7 @@ bool DuckHuntMain::Init()
 	BuildScreenQuadGeometryBuffers();
 
 	testModelDuck = new BasicModel(md3dDevice, mTexMgr, "Models\\duck.obj", L"Textures\\DUCK.jpg");
-	testModelDuck2 = new BasicModel(md3dDevice, mTexMgr, "Models\\duck.obj", L"Textures\\DUCK.jpg");
-	testModelDuck3 = new BasicModel(md3dDevice, mTexMgr, "Models\\duck.obj", L"Textures\\Duck.jpg");
-	testModelDuck4 = new BasicModel(md3dDevice, mTexMgr, "Models\\duck.obj", L"Textures\\Duck.jpg");
+
 
 
 	BasicModelInstance testInstanceDuck;
@@ -203,9 +219,9 @@ bool DuckHuntMain::Init()
 	BasicModelInstance testInstanceDuck4;
 
 	testInstanceDuck.Model = testModelDuck;
-	testInstanceDuck2.Model = testModelDuck2;
-	testInstanceDuck3.Model = testModelDuck3;
-	testInstanceDuck4.Model = testModelDuck4;
+	testInstanceDuck2.Model = testModelDuck;
+	testInstanceDuck3.Model = testModelDuck;
+	testInstanceDuck4.Model = testModelDuck;
 
 
 	//Duck 1
@@ -325,6 +341,7 @@ void DuckHuntMain::UpdateScene(float dt)
 	BuildShadowTransform();
 
 	mCam.UpdateViewMatrix();
+	mSystem->update();
 }
 
 void DuckHuntMain::DrawScene()
@@ -479,6 +496,10 @@ void DuckHuntMain::OnMouseDown(WPARAM btnState, int x, int y)
 		mZoomed = true;
 		zoom = 1;
 		mCam.Zoom(AspectRatio());
+	}
+	if ((btnState & MK_LBUTTON) != 0)
+	{
+		result = mSystem->playSound(mGunFire, 0, false, &channel);
 	}
 	SetCapture(mhMainWnd);
 }

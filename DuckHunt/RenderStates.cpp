@@ -20,7 +20,8 @@ void RenderStates::InitAll(ID3D11Device* device)
 	ZeroMemory(&crosshairDesc, sizeof(D3D11_DEPTH_STENCIL_DESC));
 	crosshairDesc.DepthEnable = false;
 	crosshairDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
-	crosshairDesc.DepthFunc = D3D11_COMPARISON_EQUAL;
+
+
 	HR(device->CreateDepthStencilState(&crosshairDesc, &Crosshair));
 	//
 	// WireframeRS

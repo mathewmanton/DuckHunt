@@ -3,10 +3,11 @@
 #include "Vertex.h"
 #include "Effects.h"
 #include "Camera.h"
+#include "RenderStates.h"
 #ifndef CROSSHAIR_H
 #define CROSSHAIR_H
 
-class Camera;
+//class Camera;
 class Crosshair
 {
 public:
@@ -14,23 +15,19 @@ public:
 	~Crosshair();
 
 
-	void Draw(ID3D11DeviceContext* dc, Camera cam,float viewWidth, float viewHeight);
+	void Draw(ID3D11DeviceContext* dc, const Camera& cam,float viewWidth, float viewHeight);
 
 private:
 	ID3D11Buffer* mCrosshairVB;
 	ID3D11Buffer* mCrosshairIB;
 	ID3DX11EffectTechnique* mTech;
 
-    XMMATRIX Scale;
-	XMMATRIX Translation;
-    XMMATRIX World;
-	XMMATRIX WVP;
+
 
 
 	XMFLOAT4X4 mWorld;
 	XMFLOAT4X4 mView;
 	XMFLOAT4X4 mProj;
-	ID3D11ShaderResourceView* mSRVMap;
 };
 
 #endif // CROSSHAIR_H
