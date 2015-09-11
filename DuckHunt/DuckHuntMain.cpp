@@ -27,6 +27,7 @@
 #include "Crosshair.h"
 #include "fmod.hpp"
 #include "xnacollision.h"
+#include "Terrain.h"
 struct BoundingSphere
 {
 	BoundingSphere() : Center(0.0f, 0.0f, 0.0f), Radius(0.0f) {}
@@ -64,6 +65,7 @@ private:
 
 	TextureMgr mTexMgr;
 	Sky* mSky;
+	Terrain mTerrain;
 
 	BasicModel* testModelDuck;
 	BasicModel* testModelDuck2;
@@ -194,7 +196,20 @@ bool DuckHuntMain::Init()
 	DuckHuntMain::ShowCursors(false);
 	mSky = new Sky(md3dDevice, L"Textures/desertcube1024.dds", 5000.0f);
 	mSmap = new ShadowMap(md3dDevice, SMapSize, SMapSize);
+	Terrain::InitInfo tii;
+	tii.HeightMapFilename = L"Textures/myT5.raw";
+	tii.LayerMapFilename0 = L"Textures/grass.dds";
+	tii.LayerMapFilename1 = L"Textures/darkdirt.dds";
+	tii.LayerMapFilename2 = L"Textures/stone.dds";
+	tii.LayerMapFilename3 = L"Textures/lightdirt.dds";
+	tii.LayerMapFilename4 = L"Textures/snow.dds";
+	tii.BlendMapFilename = L"Textures/blend.dds";
+	tii.HeightScale = 50.0f;
+	tii.HeightmapWidth = 2049;
+	tii.HeightmapHeight = 2049;
+	tii.CellSpacing = 0.5f;
 
+	mTerrain.Init(md3dDevice, md3dImmediateContext, tii);
 	//Sound
 	result = FMOD::System_Create(&mSystem);
 	result = mSystem->init(32, FMOD_INIT_NORMAL, 0);
@@ -346,6 +361,24 @@ void DuckHuntMain::UpdateScene(float dt)
 	// Animate the lights (and hence shadows).
 	//
 
+	////
+	//// Walk/fly mode
+	////
+	//if (GetAsyncKeyState('2') & 0x8000)
+	//	mWalkCamMode = true;
+	//if (GetAsyncKeyState('3') & 0x8000)
+	//	mWalkCamMode = false;
+
+	//// 
+	//// Clamp camera to terrain surface in walk mode.
+	////
+	//if (mWalkCamMode)
+	//{
+	//	XMFLOAT3 camPos = mCam.GetPosition();
+	//	float y = mTerrain.GetHeight(camPos.x, camPos.z);
+	//	mCam.SetPosition(camPos.x, y + 2.0f, camPos.z);
+	//}
+
 	BuildShadowTransform();
 
 	mCam.UpdateViewMatrix();
@@ -410,6 +443,7 @@ void DuckHuntMain::DrawScene()
 	if (GetAsyncKeyState('1') & 0x8000)
 		md3dImmediateContext->RSSetState(RenderStates::WireframeRS);
 
+	mTerrain.Draw(md3dImmediateContext, mCam, mDirLights);
 	//
 	// Draw opaque objects.
 	//

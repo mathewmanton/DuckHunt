@@ -87,6 +87,9 @@
     <ClCompile Include="Crosshair.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Terrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LoadOBJ.h">
@@ -158,6 +161,9 @@
     <ClInclude Include="Crosshair.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Terrain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="FX\Basic.fx">
@@ -188,6 +194,9 @@
       <Filter>FX</Filter>
     </FxCompile>
     <FxCompile Include="FX\Crosshair.fx">
+      <Filter>FX</Filter>
+    </FxCompile>
+    <FxCompile Include="FX\Terrain.fx">
       <Filter>FX</Filter>
     </FxCompile>
   </ItemGroup>

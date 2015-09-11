@@ -28,6 +28,12 @@ const D3D11_INPUT_ELEMENT_DESC InputLayoutDesc::Crosshair[2] =
 	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	{ "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 };
+const D3D11_INPUT_ELEMENT_DESC InputLayoutDesc::Terrain[3] =
+{
+	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+};
 
 #pragma endregion
 
@@ -35,6 +41,7 @@ const D3D11_INPUT_ELEMENT_DESC InputLayoutDesc::Crosshair[2] =
 
 ID3D11InputLayout* InputLayouts::Pos = 0;
 ID3D11InputLayout* InputLayouts::Basic32 = 0;
+ID3D11InputLayout* InputLayouts::Terrain = 0;
 ID3D11InputLayout* InputLayouts::PosNormalTexTan = 0;
 ID3D11InputLayout* InputLayouts::Crosshair = 0;
 
@@ -59,6 +66,14 @@ void InputLayouts::InitAll(ID3D11Device* device)
 		passDesc.IAInputSignatureSize, &Basic32));
 
 	//
+	// Terrain
+	//
+
+	Effects::TerrainFX->Light1Tech->GetPassByIndex(0)->GetDesc(&passDesc);
+	HR(device->CreateInputLayout(InputLayoutDesc::Terrain, 3, passDesc.pIAInputSignature,
+		passDesc.IAInputSignatureSize, &Terrain));
+
+	//
 	// NormalMap
 	//
 
@@ -80,6 +95,7 @@ void InputLayouts::DestroyAll()
 	ReleaseCOM(Basic32);
 	ReleaseCOM(PosNormalTexTan);
 	ReleaseCOM(Crosshair);
+	ReleaseCOM(Terrain);
 }
 
 #pragma endregion
