@@ -372,12 +372,10 @@ void DuckHuntMain::UpdateScene(float dt)
 	//// 
 	//// Clamp camera to terrain surface in walk mode.
 	////
-	//if (mWalkCamMode)
-	//{
-	//	XMFLOAT3 camPos = mCam.GetPosition();
-	//	float y = mTerrain.GetHeight(camPos.x, camPos.z);
-	//	mCam.SetPosition(camPos.x, y + 2.0f, camPos.z);
-	//}
+		XMFLOAT3 camPos = mCam.GetPosition();
+		float y = mTerrain.GetHeight(camPos.x, camPos.z);
+		mCam.SetPosition(camPos.x, y + 2.0f, camPos.z);
+	
 
 	BuildShadowTransform();
 
@@ -396,6 +394,7 @@ void DuckHuntMain::DrawScene()
 	md3dImmediateContext->RSSetState(0);
 	md3dImmediateContext->ClearDepthStencilView(mDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	md3dImmediateContext->RSSetViewports(1, &mScreenViewport);
+
 	mSsao->SetNormalDepthRenderTarget(mDepthStencilView);
 
 	//
